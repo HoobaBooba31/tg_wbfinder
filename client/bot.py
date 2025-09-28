@@ -4,6 +4,7 @@ from client import main_dialogue
 from dotenv import load_dotenv
 import os
 from aiogram.fsm.storage.memory import MemoryStorage
+import asyncio
 
 
 async def start_bot():
@@ -13,6 +14,7 @@ async def start_bot():
     dp.include_router(main_dialogue.ls_router)
     await dp.start_polling(bot)
 
+
+
 if __name__ == '__main__':
-    import asyncio
     asyncio.run(start_bot())

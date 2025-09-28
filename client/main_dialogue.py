@@ -3,12 +3,14 @@ from aiogram import types, F
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from server import WBfinder
+# from server import WBfinder
 from aiogram.filters import Command
 import time
+import httpx
+import asyncio
 
 keyboard = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Начать поиск"),
-                                        KeyboardButton(text="Помощь")]], 
+                                        KeyboardButton(text="Помощь")]],
                                         resize_keyboard=True)
 
 class BotStates(StatesGroup):
@@ -19,10 +21,6 @@ ls_router = Router()
 
 @ls_router.message(Command('start'))
 async def start(message: types.Message):
-
-
-    
-
     await message.answer("Добро пожаловать в бот для поиска товаров на Wildberries!\n\n" \
                         "Нажмите 'Начать поиск', чтобы начать.", reply_markup=keyboard) 
     
@@ -34,10 +32,12 @@ async def start_search(message: types.Message, state: FSMContext):
 
 @ls_router.message(BotStates.Searching)
 async def count_pages(message: types.Message, state: FSMContext):
+
     if message.text == '/cancel':
         await state.clear()
         await message.answer("Поиск отменён. Если хотите начать заново, нажмите 'Начать поиск'.")
         return
+    
     search_query = message.text
     await state.update_data(search_query=search_query)
     await message.answer("Сколько страниц результатов вы хотите получить? (Введите число):")
@@ -60,7 +60,10 @@ async def perform_search(message: types.Message, state: FSMContext):
 
     await message.answer(f"Ищем '{search_query}' на {page_count} страницах...")
 
-    results = await WBfinder.finder_cards(search=search_query, page=str(page_count))
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(f"http://localhost:8000/search?query={search_query}&pages={page_count}")
+        data = resp.json()
+        results = data['results']
     
     if not results:
         await message.answer("По вашему запросу ничего не найдено.")
@@ -72,3 +75,6 @@ async def perform_search(message: types.Message, state: FSMContext):
 
 
     await state.clear()
+
+
+# async def check(query: str):

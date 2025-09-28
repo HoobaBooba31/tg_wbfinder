@@ -18,10 +18,9 @@ async def finder_cards(search: str = 'Зубная щётка', page: str = '1')
         try:
             req = requests.get(url=url, headers=headers)
             res = req.json()
-            # soup = BeautifulSoup(res, 'lxml')
             index = 0
-            with open(f'res{i}.json', 'w', encoding='utf-8') as file:
-                json.dump(res, file, indent=4, ensure_ascii=False)
+            # with open(f'res{i}.json', 'w', encoding='utf-8') as file:
+            #     json.dump(res, file, indent=4, ensure_ascii=False)
 
             while True:
                 try:
