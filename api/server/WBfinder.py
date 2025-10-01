@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import json
 import time
@@ -29,7 +29,7 @@ async def finder_cards(search: str = 'Зубная щётка', page: str = '1')
 
                 except:
                     if index >= len(res.get('products')):
-                        time.sleep(10)
+                        time.sleep(3)
                         break
                 
                 index += 1

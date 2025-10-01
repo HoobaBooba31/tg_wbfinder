@@ -1,6 +1,6 @@
 from aiogram import Bot
 from aiogram import Dispatcher
-from client import main_dialogue
+import main_dialogue
 from dotenv import load_dotenv
 import os
 from aiogram.fsm.storage.memory import MemoryStorage

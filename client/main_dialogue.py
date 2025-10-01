@@ -60,10 +60,15 @@ async def perform_search(message: types.Message, state: FSMContext):
 
     await message.answer(f"Ищем '{search_query}' на {page_count} страницах...")
 
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(f"http://localhost:8000/search?query={search_query}&pages={page_count}")
-        data = resp.json()
-        results = data['results']
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.get(f"http://server:8000/search?query={search_query}&pages={page_count}")
+            data = resp.json()
+            results = data['results']
+    except:
+        await message.answer('Вышла какая-то ошибка, попробуйте снова')
+        await state.clear()
+        return
     
     if not results:
         await message.answer("По вашему запросу ничего не найдено.")

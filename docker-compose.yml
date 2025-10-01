@@ -1,0 +1,16 @@
+
+services:
+  bot:
+    build: ./client
+    container_name: tg_bot
+    depends_on:
+      - server
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+
+
+  server:
+    build: ./api
+    container_name: serverapi
+    ports:
+      - "8000:8000"       
